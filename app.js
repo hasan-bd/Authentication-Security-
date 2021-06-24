@@ -12,6 +12,14 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static("public"));
 
+mongoose.connect('mongodb://localhost:27017/userDB', {useNewUrlParser: true, useUnifiedTopology: true});
+
+const userSchema = {
+  email: String,
+  password: String
+}
+
+const User = mongoose.model('User', userSchema)
 //TODO and Write your Code
 app.get('/',function(req,res){
   res.render('home')
@@ -23,6 +31,22 @@ app.get('/login',function(req,res){
 
 app.get('/register',function(req,res){
   res.render('register')
+})
+
+
+app.post('/register',function(req,res){
+  const newUser = new User({
+    email: req.body.username,
+    password: req.body.password
+  })
+  newUser.save(function(err){
+    if(err){
+      console.log(err);
+    }else{
+      res.render('secrets')
+    }
+  })
+
 })
 
 
